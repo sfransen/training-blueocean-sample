@@ -14,7 +14,24 @@ pipeline {
     }
     stage('Test') {
       steps {
-        archiveArtifacts 'target/*.war'
+        parallel(
+          "Test": {
+            archiveArtifacts 'target/*.war'
+            
+          },
+          "Backend": {
+            sh './jenkins/test-backend.sh'
+            
+          },
+          "Static": {
+            sh './jenkins/test-static.sh'
+            
+          },
+          "Performance": {
+            sh './jenkins/test-performance.sh'
+            
+          }
+        )
       }
     }
   }
